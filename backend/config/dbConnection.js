@@ -1,28 +1,29 @@
 import mongoose from "mongoose";
 
-
 const dbConnection = async () => {
-    // To fetch the Database
+    // To fetch Data from the Database
+
     try {
         const uri = process.env.MONGODB_URI;
-
-        // If no uri is found 
-        if(!uri){
-            throw new Error(`Please provide a valid MONGO URI`)
+        
+    // If URI is not found then throw an Error
+        if (!uri) {
+            throw new Error("Please provide a valid MONGODB_URI");
         }
 
-        mongoose.set('strictQuery', true) // To filter out the query present in schema
+        mongoose.set("strictQuery", true); // To filter out the extra query in MongoDB
+
+        const conn = await mongoose.connect(uri, {
+            serverSelectionTimeoutMS: 5000, // fail fast instead of hanging ~30s
+        });
+
+        console.log(`MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
+        return conn; // Returns the connection
 
     } catch (error) {
-        console.log("Database connection failed", error);  // If connection fails then shows error
+        console.error("Database connection failed:", error.message);
         process.exit(1);
     }
+};
 
-    const conn = await mongoose.connect(uri)
-    
-    console.log(`MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
-    return conn;
-    
-    // Returns the connection
-
-}
+export default dbConnection;
