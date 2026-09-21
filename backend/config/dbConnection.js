@@ -4,7 +4,7 @@ const dbConnection = async () => {
     // To fetch Data from the Database
 
     try {
-        const uri = process.env.MONGODB_URI;
+        const uri = process.env.MONGO_URI;
         
     // If URI is not found then throw an Error
         if (!uri) {
