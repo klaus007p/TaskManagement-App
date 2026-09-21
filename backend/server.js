@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dbConnection from './config/dbConnection.js';
 import cors from 'cors';
+import authRoutes from './routes/auth.routes.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 
@@ -32,6 +33,8 @@ app.get('/api/health', (req, res) => {
         message: "Server is healthy",
     })
 })
+
+app.use("/api/auth", authRoutes);
 
 
 // Routes Will Be Added Here...
