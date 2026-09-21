@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
-import 'dotenv/config';
 import dbConnection from './config/dbConnection.js';
 import cors from 'cors';
+import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 
 
@@ -31,6 +32,16 @@ app.get('/api/health', (req, res) => {
         message: "Server is healthy",
     })
 })
+
+
+// Routes Will Be Added Here...
+
+// Error Handlers will be used Here...
+
+app.use(notFound)
+app.use(errorHandler)
+
+
 
 // To Start the express server
 
