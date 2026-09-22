@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import express from 'express';
-import mongoose from 'mongoose';
 import dbConnection from './config/dbConnection.js';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';

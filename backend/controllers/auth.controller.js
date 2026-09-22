@@ -30,3 +30,42 @@ export const registerUser = asyncHandler (async (req, res) => {
     });
 });
 
+
+// To login an existing user 
+
+export const loginUser = asyncHandler (async (req, res) => {
+
+    // Read the frontend Dataa
+
+    const {email , password} = req.body;
+
+    if(!email || !password){
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase()}).select("+password");  // To check if user exists
+
+    if(!user){
+        throw new ApiError(401, "Invalid email or password");
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if(!isMatch){
+        throw new ApiError(401, "Invalid email or password");
+    }
+
+    const token = user.generateToken();
+
+    res.status(200).json({
+        success: true,
+        message: "Login Successful",
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            userName: user.userName
+        },
+    });
+});

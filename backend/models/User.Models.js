@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-
+import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 // Designing the Schema For User model
 
 const userSchema = new mongoose.Schema(
@@ -35,11 +36,34 @@ const userSchema = new mongoose.Schema(
             select: false,
         },
 
-        // Will Add password hashing later using bcrypt  #Todo: 1
-
     },
     {timestamps: true} // adds createdAt and updatedAt
 )
+
+
+// Will Add password hashing later using bcrypt  #Todo: 1
+
+// Runs before save and hashes the password 
+
+userSchema.pre("save", async function () {
+    if(!this.isModified("password")) return;
+
+    this.password = await bcryptjs.hash(this.password, 10);
+});
+
+// Compares the pass... which is hashed
+
+userSchema.methods.comparePassword = function(plainPass){
+    return bcryptjs.compare(plainPass, this.password);
+}
+
+// To generate Token
+
+userSchema.methods.generateToken = function() {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+    });
+};
 
 
 export const User = mongoose.model("User", userSchema);
