@@ -69,3 +69,20 @@ export const loginUser = asyncHandler (async (req, res) => {
         },
     });
 });
+
+
+
+// To get user Details
+
+
+export const getMe = asyncHandler(async (req, res) => {
+    res.status(200).json({
+        success: true,
+        user: {
+            id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            userName: req.user.userName,
+        },
+    });
+});

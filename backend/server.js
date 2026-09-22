@@ -3,6 +3,7 @@ import express from 'express';
 import dbConnection from './config/dbConnection.js';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
+import { protect } from './middleware/auth.middleware.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 
@@ -32,6 +33,15 @@ app.get('/api/health', (req, res) => {
         message: "Server is healthy",
     })
 })
+
+// for test
+app.get("/api/private-test", protect, (req, res) =>{
+    res.json({
+        success: true,
+        message: `Hello ${req.user.name}`
+    })
+})
+
 
 app.use("/api/auth", authRoutes);
 
