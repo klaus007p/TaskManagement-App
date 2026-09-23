@@ -10,9 +10,10 @@ import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 
 const app = express();
+const allowedOrigins = [process.env.CORS_ORIGIN, process.env.CLIENT_URL].filter(Boolean);
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
     credentials: true,
 }))
 
