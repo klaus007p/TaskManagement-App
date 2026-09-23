@@ -31,13 +31,27 @@ export const createTask = asyncHandler(async (req, res) => {
 
 // to list loggedin user tasks
 
-export const getTask = asyncHandler(async (req, res) => {
+export const getTasks = asyncHandler(async (req, res) => { // Todo 2: Adding pagination and filtering by status index
 
-    const tasks = await Task.find({owner: req.user._id}).sort({ createdAt: -1 });
+    const { status, page = 1, limit = 10 } = req.query;
+
+    const filter = { owner: req.user._id };
+    if (status) filter.status = status; // filter by status
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [tasks, total] =  await Promise.all([
+        Task.find(filter).sort({createdAt: -1}).skip(skip).limit(Number(limit)),
+        Task.countDocuments(filter),
+    ]);
+
 
     res.status(200).json({
         success: true,
         count: tasks.length,
+        total,
+        page: Number(page),
+        totalPages: Math.ceil(total / Number(limit)),
         tasks,
     });
 });
