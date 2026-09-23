@@ -16,11 +16,11 @@ export const errorHandler = (err, req, res, next) => {
     // If mongoose schema validation failed / a field is invalid
     if (err.name === 'ValidationError') {
         statusCode = 400;
-        const message = [];
+        const messages = [];
         for (const field in err.errors) {
-            message.push(err.errors[field].message);
+            messages.push(err.errors[field].message);
         }
-        message = message.join(", ");  
+        message = messages.join(", ");  
     }
 
     // If Duplicate email or username exists
@@ -29,6 +29,12 @@ export const errorHandler = (err, req, res, next) => {
         statusCode = 409;
         const field = Object.keys(err.keyPattern)[0];
         message = `${field} already Exists`;
+    }
+
+    // If Mongoose Cast Error (Invalid ID Format)
+    if(err.name === 'CastError'){
+        statusCode = 400;
+        message = `Invalid ${err.path}`;
     }
 
     res.status(statusCode).json({ success: false, message })

@@ -3,6 +3,7 @@ import express from 'express';
 import dbConnection from './config/dbConnection.js';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
+import taskRoutes from './routes/task.routes.js';
 import { protect } from './middleware/auth.middleware.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
@@ -44,7 +45,7 @@ app.get("/api/private-test", protect, (req, res) =>{
 
 
 app.use("/api/auth", authRoutes);
-
+app.use("/api/tasks", taskRoutes)
 
 // Routes Will Be Added Here...
 
