@@ -60,8 +60,8 @@ Make sure your `.env` contains values like:
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 JWT_EXPIRES_IN=7d
-CORS_ORIGIN=*
-CLIENT_URL=http://your_url
+CORS_ORIGIN=https://your-frontend-domain.com
+CLIENT_URL=https://your-frontend-domain.com
 ```
 
 ### Frontend
@@ -71,6 +71,17 @@ cd TaskApp/frontend
 npm install
 npm run dev
 ```
+
+For a deployed frontend, set this variable in the frontend hosting dashboard before
+building. The value must be the complete deployed backend URL including `/api`:
+
+```env
+VITE_API_URL=https://your-backend-domain.com/api
+```
+
+Set `CORS_ORIGIN` and `CLIENT_URL` in the backend hosting dashboard to the complete
+frontend URL, without a trailing slash. Redeploy the frontend after changing
+`VITE_API_URL`, because Vite embeds it during the build.
 
 
 

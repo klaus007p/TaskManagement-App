@@ -10,10 +10,20 @@ import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 
 const app = express();
-const allowedOrigins = [process.env.CORS_ORIGIN, process.env.CLIENT_URL].filter(Boolean);
+const allowedOrigins = [process.env.CORS_ORIGIN, process.env.CLIENT_URL]
+    .filter(Boolean)
+    .flatMap((value) => value.split(","))
+    .map((value) => value.trim().replace(/\/$/, ""))
+    .filter(Boolean);
 
 app.use(cors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Origin is not allowed by CORS"));
+    },
     credentials: true,
 }))
 
